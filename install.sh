@@ -1,5 +1,6 @@
-
 BACKUP_DIR=~/.backup/dotfileloader
+
+set -e
 
 mkdir -p $BACKUP_DIR
 

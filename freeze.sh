@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 freezeConfig() {
   rm -rf $1
   mkdir -p $1
