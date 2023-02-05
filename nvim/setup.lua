@@ -5,7 +5,6 @@ vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
-
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -169,14 +168,51 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local nvim_lsp = require('lspconfig')
 
-local servers = { "svelte", "gopls", "tsserver", "pyright", "rust_analyzer", "volar", "tailwindcss" }
+local servers = { "svelte", "gopls", "tsserver", "pyright", "rust_analyzer", "volar", "tailwindcss", "millet" }
 for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = lsp_flags,
-    capabilities = capabilities
-  }
+  if(lsp == "millet")
+  then
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+      flags = lsp_flags,
+      capabilities = capabilities,
+      -- root_dir = nvim_lsp.util.root_pattern('Makefile')
+    }
+  else
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+      flags = lsp_flags,
+      capabilities = capabilities
+    }
+  end
 end
+
+--prettier = {
+--  command = "npx"
+--  arguments = ["--no-install", "prettier", "--fix", "--write", "${INPUT}"]
+--}
+
+--nvim_lsp.efm.setup{
+--  init_options = {documentFormatting = true},
+--  settings = {
+--    rootMarkers = {".git/"},
+--    languages = {
+--    }
+--}
+--
+
+local null_ls = require("null-ls")
+
+local sources = {
+  null_ls.builtins.formatting.prettier,
+  null_ls.builtins.diagnostics.write_good,
+  null_ls.builtins.code_actions.eslint_d,
+  null_ls.builtins.diagnostics.eslint_d,
+  null_ls.builtins.formatting.gofmt,
+  null_ls.builtins.formatting.prettierd
+}
+
+null_ls.setup({sources = sources })
 
 require('typescript').setup{}
 
